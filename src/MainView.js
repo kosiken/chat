@@ -13,7 +13,7 @@ import TypingBox from "./TypingBox"
 import Chip from '@material-ui/core/Chip';
 
 
-
+let prod = true;
 
 const useStyles = makeStyles((theme) => (
 
@@ -144,8 +144,10 @@ iceCandidatePoolSize:10
 
 };
 const classes=useStyles();
-                                                          
-const [sock, setSock] = useState(io("http://192.168.43.1:8000"));
+                
+                     
+                                                                              
+const [sock, setSock] = useState(io(prod ? "https://kosy.herokuapp.com": "http://192.168.43.1:8000"));
 
 
 
