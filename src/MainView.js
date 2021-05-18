@@ -134,8 +134,12 @@ urls: [
 "stun:stun1.l.google.com:19302","stun:stun2.l.google.com:19302"
 
 ]
-}
-
+},
+	
+{ urls: "stun:stun.stunprotocol.org:3478" },
+	{ urls: "stun:stun.sipnet.net:3478" },
+	{ urls: "stun:stun.ideasip.com:3478" },
+	{ urls: "stun:stun.iptel.org:3478" },
 ],
 
 iceCandidatePoolSize:10
@@ -311,7 +315,7 @@ alert(err.message)
 }
 const JoinChat= async ()=>{
 
-alert(" join");
+
 
 
 if(!window.localMediaStream) {
@@ -349,7 +353,7 @@ try{
 
 let b = await peer.addIceCandidate(ans.data)
 
-return JSON.stringify(b) + "done"
+return JSON.stringify(b) + "done ice'
 
 }catch(err){
 
@@ -431,6 +435,8 @@ setMessage("Ans")
 catch(err){
 alert(err.message)
 }
+	
+	
 
 }
 const HandleData = (config)=>
@@ -449,16 +455,16 @@ switch(type)
 
 case "candid":
 
-   AddIceCandidate(config).then(alert);
+   AddIceCandidate(config).then(setText);
 break;
 case "offer":
 //setMessage("typeoo");
-HandleAnswer(config).then(alert);
+HandleAnswer(config).then(setText);
 
 break;
 
 case "answer":
-HandleAnswer(config).then(alert);
+HandleAnswer(config).then(setText);
 break;
 default:
 alert(type)
@@ -541,7 +547,8 @@ selectPeer(p)
 
 
   <div className={classes.root}>
-
+<p>{text}</p>
+<p>{message} </p>
 <div style={
 {
 width:150,
