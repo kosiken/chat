@@ -353,7 +353,7 @@ try{
 
 let b = await peer.addIceCandidate(ans.data)
 
-return JSON.stringify(b) + "done ice'
+return JSON.stringify(b) + "done ice"
 
 }catch(err){
 
