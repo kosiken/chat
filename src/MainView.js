@@ -207,7 +207,7 @@ const {peers} = window.connections
 const id = config.id || config.peer_id
 const peer_id = id
 if(peer_id in peers) return;
-const peerConnection = new RTCPeerConnection(servers		);
+const peerConnection = new window.RTCPeerConnection(servers		);
 
 window.connections.peers[peer_id] = peerConnection;
 
@@ -225,8 +225,11 @@ const signalingSocket = sock
 
 				signalingSocket.emit("data-tran-sock", {
 type:"candid",room:"lion",
-id:peer_id,		peer_id: sock.id,					data: e.candidate
-
+id:peer_id,		peer_id: sock.id,					data: {
+	
+	sdpMLineIndex: event.candidate.sdpMLineIndex,
+						candidate: event.candidate.candidate,
+}
 
 
 
@@ -350,8 +353,12 @@ let ans = config
 
 if (ans.data) {
 try{
+	
+	
+	let ice = new window.RTCIceCandidate(ans.data)
 
-let b = await peer.addIceCandidate(ans.data)
+let b = await peer.addIceCandidate(ice);
+	
 
 return JSON.stringify(b) + "done ice"
 
@@ -389,7 +396,7 @@ const sessionDescription = config.data
 //if(!peer) alert("error")
 // (!peer) return
 //asetMessage("olay")
-const desc = config.data
+const desc = new window.RTCSessionDescription(config.data)
 
 //setMessage(JSON.stringify(desc))
 
