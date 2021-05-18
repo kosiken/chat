@@ -577,6 +577,7 @@ margin: 10
 </div>
             
 <video autoPlay ref={remoteRef} controls={false}
+playsInline
 
 style={{      
 height:"100vh",
