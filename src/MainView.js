@@ -3,13 +3,8 @@
 import React,{useState, useEffect} from "react"
 import io from "socket.io-client"
 //import "./App.css";
-import IconButton from '@material-ui/core/IconButton';
 import { makeStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography'
-import TextField from '@material-ui/core/TextField';
-import SendIcon from '@material-ui/icons/Send';
-import InputAdornment from '@material-ui/core/InputAdornment'
-import TypingBox from "./TypingBox"
+ 
 import Chip from '@material-ui/core/Chip';
 
 
@@ -89,35 +84,6 @@ border:"none"
 
 )
 
-const Message =({user, message, className}) => 
-
-{
-
-
-
-return (
-<div>
-<div className={className}>
-
-
-<Typography variant="h6">
-{user}
-</Typography>
-
-<Typography>
-{message}
-
-</Typography>
-</div>
-
-
-</div>
-
-)
-
-
-
-}
 
 
 const MainView = ({user}) => {
@@ -556,59 +522,7 @@ selectPeer(p)
 
 
   <div className={classes.root}>
-<p>{text}</p>
-<p>{message} </p>
-<div style={
-{
-width:150,
-position:"fixed",top:0,right:0
-}}
-
->
-                                                                           
-<video autoPlay volume={0} ref={ref} muted  playsInline style={{
-
-width:"120px", height:"200px",
-margin: 10
-
-
-}}
-/
->
-
-</div>
-            
-<video autoPlay ref={remoteRef} controls={false}
-playsInline
-
-style={{      
-height:"100vh",
-
-width:"100vw"
-
-}}
-/>
-
-<div style={{
-zIndex:999,
-opacity:0.7,
-                                            
-position:"relative",
-marginTop:0,
-display:(view !=="messages" ? "none" : "block" )
-}}>
-
-
-     
-<div className={classes.messageBox}>
-
-{RenderMessages()}
-
-
-</div>
-
-<TypingBox onSubmit={sendMessage} />
-</div>
+ 
 </div>  
 
 
