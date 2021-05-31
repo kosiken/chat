@@ -217,7 +217,11 @@ const Chat = () => {
           }}
         />
       </div>
-      <div className="message-box flex column none">
+
+<div className="message-box-wrapper none">
+<div className="message-box flex column">
+
+  
         <div
           className="chat-header flex space-btwn "
           style={{
@@ -250,7 +254,9 @@ const Chat = () => {
         <TypingBox onSubmit={sendIt} />
         <div></div>
       </div>
-    </div>
+   
+</div>
+  </div>
   );
 };
 
