@@ -24,13 +24,15 @@ const Servers = {
 class ChatApi {
   constructor(
     user,
-    onAddPeer,
-    audio = true,
-    video = true,
-    OnMessage = () => {},
-    onAddStream = () => {},
-    OnDisconnect= () => {},
     config = {
+      audio: true,
+      video: true,
+      onAddPeer: () => {},
+
+      OnMessage: () => {},
+      onAddStream: () => {},
+      OnDisconnect: () => {},
+
       addLocalStream: true,
       maxPeers: 2,
       servers: Servers,
@@ -46,13 +48,13 @@ class ChatApi {
     this.remoteDataChannels = {};
     this.streams = {};
     this.localMediaStream = null;
-    this.USE_AUDIO = audio;
-    this.USE_VIDEO = video;
-    this.OnMessage = OnMessage;
-    this.onAddStream = onAddStream;
-    this.config = config;
-    this.onAddPeer = onAddPeer;
-    this.OnDisconnect = OnDisconnect;
+    this.USE_AUDIO = config.audio;
+    this.USE_VIDEO = config.video;
+    this.OnMessage = config.OnMessage;
+    this.onAddStream = config.onAddStream;
+    this.addLocalStream = config.addLocalStream;
+    this.onAddPeer = config.onAddPeer;
+    this.OnDisconnect = config.OnDisconnect;
   }
 
   initialize(url) {
@@ -62,7 +64,7 @@ class ChatApi {
     this.sock.on("connect", (config) => this.joinChat(config));
     this.sock.on("addPeer", (config) => this.addPeer(config));
     this.sock.on("data-rec", (config) => this.handleData(config));
-    this.sock.on("disconnect", (reason) => this.onDisconnect(reason))
+    this.sock.on("disconnect", (reason) => this.onDisconnect(reason));
   }
 
   async addPeer(config) {
@@ -74,9 +76,7 @@ class ChatApi {
       peer_id = id;
 
     if (peer_id in peers) return;
-    const peerConnection = new window.RTCPeerConnection(
-      this.config.Servers || Servers
-    );
+    const peerConnection = new window.RTCPeerConnection(this.Servers);
     peers[peer_id] = peerConnection;
 
     peerConnection.onicecandidate = function (event) {
@@ -86,6 +86,7 @@ class ChatApi {
     peerConnection.onaddstream = function (event) {
       // ;
       streams[peer_id] = event.stream;
+      console.log("loions");
       ChatObject.onAddStream("remote", event.stream, peer_id);
     };
 
@@ -97,9 +98,6 @@ class ChatApi {
 
     this.dataChannels[peer_id] =
       peerConnection.createDataChannel("talk__data_channel");
-
-
-
 
     if (config.createOffer) {
       let localDescription = await peerConnection.createOffer();
@@ -123,9 +121,14 @@ class ChatApi {
     this.onAddPeer(config);
   }
 
+  /**
+   *
+   * @param {string} room
+   * @returns {Promise<void>}
+   */
   async joinChat(room) {
     console.log(this);
-    if (!this.localMediaStream && this.config.addLocalStream) {
+    if (!this.localMediaStream && this.addLocalStream) {
       try {
         this.localMediaStream = await navigator.mediaDevices.getUserMedia({
           audio: this.USE_AUDIO,
@@ -135,6 +138,7 @@ class ChatApi {
         console.log(err);
         return;
       }
+      this.toggleVideo()
       this.onAddStream("local", this.localMediaStream, null);
     }
     this.sock.emit("join", {
@@ -225,9 +229,9 @@ class ChatApi {
       const desc = new window.RTCSessionDescription(config.data);
       // let ans;
       if (sessionDescription.type === "answer")
-       await peer.setRemoteDescription(desc);
+        await peer.setRemoteDescription(desc);
       else if (desc.type === "offer") {
-         await peer.setRemoteDescription(desc);
+        await peer.setRemoteDescription(desc);
 
         let ld = await peer.createAnswer();
 
@@ -267,7 +271,10 @@ class ChatApi {
 
       case "message":
         this.OnMessage(config.data);
+        break;
 
+      case "addstream":
+        this.createLocalMediaStream()
         break;
 
       default:
@@ -276,6 +283,11 @@ class ChatApi {
     }
   }
 
+  /**
+   *
+   * @param {string} peer_id
+   * @param {any} message
+   */
   message(peer_id, message) {
     /**
      *
@@ -299,8 +311,16 @@ class ChatApi {
     for (let peer_id in this.peers) {
       this.peers[peer_id].close();
     }
-    this.peers = {}
-    this.OnDisconnect()
+    this.peers = {};
+    this.OnDisconnect();
+  }
+
+  async toggleVideo() {
+    // const ChatObject = this;
+    // this.localMediaStream.active
+    this.localMediaStream.getAudioTracks()[0].enabled = !this.localMediaStream.getAudioTracks()[0].enabled;
+   this.localMediaStream.getVideoTracks()[0].enabled = !this.localMediaStream.getVideoTracks()[0].enabled;
+  
   }
 }
 
