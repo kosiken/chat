@@ -1,25 +1,46 @@
 import io from "socket.io-client";
 
 const Servers = {
+  // iceServers: [
+  //   { urls: "stun:stun.l.google.com:19302" },
+  //   { urls: "stun:stun.stunprotocol.org:3478" },
+  //   { urls: "stun:stun.sipnet.net:3478" },
+  //   { urls: "stun:stun.ideasip.com:3478" },
+  //   { urls: "stun:stun.iptel.org:3478" },
+  //   //   { urls: "turn:numb.viagenie.ca", username: "imvasanthv@gmail.com", credential: "d0ntuseme" },
+  //   {
+  //     urls: [
+  //       "turn:173.194.72.127:19305?transport=udp",
+  //       "turn:[2404:6800:4008:C01::7F]:19305?transport=udp",
+  //       "turn:173.194.72.127:443?transport=tcp",
+  //       "turn:[2404:6800:4008:C01::7F]:443?transport=tcp",
+  //     ],
+  //     username: "CKjCuLwFEgahxNRjuTAYzc/s6OMT",
+  //     credential: "u1SQDR/SQsPQIxXNWQT7czc/G4c=",
+  //   },
+  // ],
+
   iceServers: [
-    { urls: "stun:stun.l.google.com:19302" },
-    { urls: "stun:stun.stunprotocol.org:3478" },
-    { urls: "stun:stun.sipnet.net:3478" },
-    { urls: "stun:stun.ideasip.com:3478" },
-    { urls: "stun:stun.iptel.org:3478" },
-    //   { urls: "turn:numb.viagenie.ca", username: "imvasanthv@gmail.com", credential: "d0ntuseme" },
     {
+      urls: ["stun:us-turn1.xirsys.com"],
+    },
+    {
+      username:
+        "gHW-9xnxwvqyc8eryWn3WQ9mdCs5E9o6GucxemiIDGZsf312-1IIeUDAvtNwTgQnAAAAAGC5Jp9rb3Npa2Vu",
+      credential: "db593dd4-c49d-11eb-bd48-0242ac140004",
       urls: [
-        "turn:173.194.72.127:19305?transport=udp",
-        "turn:[2404:6800:4008:C01::7F]:19305?transport=udp",
-        "turn:173.194.72.127:443?transport=tcp",
-        "turn:[2404:6800:4008:C01::7F]:443?transport=tcp",
+        "turn:us-turn1.xirsys.com:80?transport=udp",
+        "turn:us-turn1.xirsys.com:3478?transport=udp",
+        "turn:us-turn1.xirsys.com:80?transport=tcp",
+        "turn:us-turn1.xirsys.com:3478?transport=tcp",
+        "turns:us-turn1.xirsys.com:443?transport=tcp",
+        "turns:us-turn1.xirsys.com:5349?transport=tcp",
       ],
-      username: "CKjCuLwFEgahxNRjuTAYzc/s6OMT",
-      credential: "u1SQDR/SQsPQIxXNWQT7czc/G4c=",
     },
   ],
 };
+
+
 
 class ChatApi {
   constructor(
@@ -138,7 +159,7 @@ class ChatApi {
         console.log(err);
         return;
       }
-      this.toggleVideo()
+      this.toggleVideo();
       this.onAddStream("local", this.localMediaStream, null);
     }
     this.sock.emit("join", {
@@ -274,7 +295,7 @@ class ChatApi {
         break;
 
       case "addstream":
-        this.createLocalMediaStream()
+        this.createLocalMediaStream();
         break;
 
       default:
@@ -318,9 +339,10 @@ class ChatApi {
   async toggleVideo() {
     // const ChatObject = this;
     // this.localMediaStream.active
-    this.localMediaStream.getAudioTracks()[0].enabled = !this.localMediaStream.getAudioTracks()[0].enabled;
-   this.localMediaStream.getVideoTracks()[0].enabled = !this.localMediaStream.getVideoTracks()[0].enabled;
-  
+    this.localMediaStream.getAudioTracks()[0].enabled =
+      !this.localMediaStream.getAudioTracks()[0].enabled;
+    this.localMediaStream.getVideoTracks()[0].enabled =
+      !this.localMediaStream.getVideoTracks()[0].enabled;
   }
 }
 

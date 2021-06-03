@@ -1,10 +1,13 @@
  import './App.css';
-import Chat from './pages/Chat';
+import Choice from './Choice';
+
 
 function App() {
+
+
   return (
     <div className="App">
-<Chat/>
+<Choice/>
     </div>
   );
 }
