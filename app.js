@@ -3,12 +3,45 @@ const path = require("path");
 const sio = require("socket.io");
 const cors = require("cors");
 const http = require("http");
-
+const AccessToken = require('twilio').jwt.AccessToken;
+const VideoGrant = AccessToken.VideoGrant;
 const app = express();
+const router = express.Router();
 
+const accountSid = process.env.TWILIO_SID;
+const apiSecret = process.env.TWILIO_API_SECRET;
+const apiKey =  process.env.TWILIO_API_KEY;
+
+
+
+
+ 
+router.get("/create-token/:room/:identity", (req, res)=> {
+let identity = req.params.identity;
+const videoGrant = new VideoGrant({
+  room: req.params.room,
+});
+
+const token = new AccessToken(
+  accountSid,
+  apiKey,
+  apiSecret,
+  {identity}
+);
+
+
+token.addGrant(videoGrant);
+
+res.status(200).json({
+  token: token.toJwt()
+
+})
+
+
+})
 app.use(cors());
 app.use(express.static(path.join(__dirname, "build")));
-
+app.use("/", router)
 const server = http.createServer(app);
 
 const io = sio(server, {
