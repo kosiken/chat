@@ -33,7 +33,8 @@ const token = new AccessToken(
 token.addGrant(videoGrant);
 
 res.status(200).json({
-  token: token.toJwt()
+  token: token.toJwt(),
+ roomName: req.params.room,
 
 })
 
