@@ -2,47 +2,54 @@ const express = require("express");
 const path = require("path");
 const sio = require("socket.io");
 const cors = require("cors");
+
+
 const http = require("http");
-const AccessToken = require('twilio').jwt.AccessToken;
+const AccessToken = require("twilio").jwt.AccessToken;
+const utils = require('./utils.js');
+
+
+
+
 const VideoGrant = AccessToken.VideoGrant;
+
 const app = express();
 const router = express.Router();
 
+
 const accountSid = process.env.TWILIO_SID;
 const apiSecret = process.env.TWILIO_API_SECRET;
-const apiKey =  process.env.TWILIO_API_KEY;
+const apiKey = process.env.TWILIO_API_KEY;
 
+router.get("/create-token/:room/:identity", (req, res) => {
+  let identity = req.params.identity;
+  const videoGrant = new VideoGrant({
+    room: req.params.room,
+  });
 
+  const token = new AccessToken(accountSid, apiKey, apiSecret, { identity });
 
+  token.addGrant(videoGrant);
 
- 
-router.get("/create-token/:room/:identity", (req, res)=> {
-let identity = req.params.identity;
-const videoGrant = new VideoGrant({
-  room: req.params.room,
+  res.status(200).json({
+    token: token.toJwt(),
+    roomName: req.params.room,
+  });
 });
 
-const token = new AccessToken(
-  accountSid,
-  apiKey,
-  apiSecret,
-  {identity}
-);
+router.post("/meeting-end/:room", (req, res) => {
 
 
-token.addGrant(videoGrant);
+utils.writeDuration(Number(req.body.duration))
+.then(res.status(200).json)
+.catch(res.status(500).json);
 
-res.status(200).json({
-  token: token.toJwt(),
- roomName: req.params.room,
-
-})
 
 
 })
 app.use(cors());
 app.use(express.static(path.join(__dirname, "build")));
-app.use("/", router)
+app.use("/", router);
 const server = http.createServer(app);
 
 const io = sio(server, {
@@ -130,3 +137,5 @@ const PORT = process.env.PORT;
 server.listen(PORT, () => {
   console.log("listening on http://localhost:3000");
 });
+
+

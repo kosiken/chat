@@ -26,3 +26,5 @@ yarn-error.log*
 
 *.map
 */**.map
+/kill
+/test.js
