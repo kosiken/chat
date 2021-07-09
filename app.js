@@ -2,7 +2,7 @@ const express = require("express");
 const path = require("path");
 const sio = require("socket.io");
 const cors = require("cors");
-
+const bodyParser = require("body-parser");
 
 const http = require("http");
 const AccessToken = require("twilio").jwt.AccessToken;
@@ -15,6 +15,7 @@ const VideoGrant = AccessToken.VideoGrant;
 
 const app = express();
 const router = express.Router();
+app.use(bodyParser.json());
 
 
 const accountSid = process.env.TWILIO_SID;
@@ -37,12 +38,16 @@ router.get("/create-token/:room/:identity", (req, res) => {
   });
 });
 
-router.post("/update-duration", (req, res) => {
+router.post("/update-duration", async (req, res) => {
+console.log(req.body)
+try {
+res.send( await utils.writeDuration(Number(req.body.duration)))
+}
+catch(err)
+{
+  res.status(500).send(err.toString())
+}
 
-
-utils.writeDuration(Number(req.body.duration))
-.then(res.status(200).send)
-.catch(res.status(500).json);
 
 
 
@@ -132,10 +137,10 @@ io.on("connection", (socket) => {
     }
   });
 });
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3000;
 
 server.listen(PORT, () => {
-  console.log("listening on http://localhost:3000");
+  console.log("listening on http://localhost:" + PORT);
 });
 
 
