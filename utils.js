@@ -7,9 +7,9 @@ return new Promise((resolve, reject) => {
     let data;
 
     try {
-        data = jsonfile.readFileSync("./public/room.json");
+        data = jsonfile.readFileSync("./build/room.json");
       if(data.duration!= duration){  data.duration = duration;
-        jsonfile.writeFileSync("./public/room.json", data);
+        jsonfile.writeFileSync("./build/room.json", data);
     }
 
     resolve(`The durtion now is ${data.duration} seconds`)
