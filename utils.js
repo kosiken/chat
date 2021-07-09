@@ -12,7 +12,7 @@ return new Promise((resolve, reject) => {
         jsonfile.writeFileSync("./public/room.json", data);
     }
 
-    resolve(data)
+    resolve(`The durtion now is ${data.duration} seconds`)
     }
     catch(err) {
         reject({

@@ -37,11 +37,11 @@ router.get("/create-token/:room/:identity", (req, res) => {
   });
 });
 
-router.post("/meeting-end/:room", (req, res) => {
+router.post("/update-duration", (req, res) => {
 
 
 utils.writeDuration(Number(req.body.duration))
-.then(res.status(200).json)
+.then(res.status(200).send)
 .catch(res.status(500).json);
 
 
